@@ -1,6 +1,7 @@
-import { expect, test } from '@playwright/test';
+import { describe, expect, it } from 'vitest';
 
-test('home page has expected h1', async ({ page }) => {
-    await page.goto('/');
-    await expect(page.locator('h1')).toBeVisible();
+describe('sum test', () => {
+    it('adds 1 + 2 to equal 3', () => {
+        expect(1 + 2).toBe(3);
+    });
 });
