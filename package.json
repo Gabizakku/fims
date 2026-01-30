@@ -12,7 +12,7 @@
 		"fix": "pnpm fmt:fix && pnpm es:fix",
     "fmt": "prettier --experimental-cli --check .",
 		"fmt:fix": "prettier --experimental-cli --write .",
-		"lint": "pnpm --parallel /^lint:/",
+		"lint": "pnpm --workspace-root --parallel /^lint:/",
 		"lint:es": "eslint --cache .",
 		"lint:sv": "svelte-check --tsconfig ./tsconfig.json",
 		"test": "pnpm test:unit -- --run && pnpm test:e2e",
