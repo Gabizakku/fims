@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      svelte:
+        specifier: 5.49.1
+        version: 5.49.1
     devDependencies:
       '@bastidood/eslint-plugin-imsort':
         specifier: ^0.11.0
@@ -65,9 +69,6 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.7.2
         version: 0.7.2(prettier-plugin-svelte@3.4.1(prettier@3.8.1)(svelte@5.49.1))(prettier@3.8.1)
-      svelte:
-        specifier: ^5.48.2
-        version: 5.49.1
       svelte-check:
         specifier: ^4.3.5
         version: 4.3.5(picomatch@4.0.3)(svelte@5.49.1)(typescript@5.9.3)
