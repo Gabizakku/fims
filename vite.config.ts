@@ -31,5 +31,7 @@ export default defineConfig({
                 },
             },
         ],
+        reporters: ['json'],
+        outputFile: './vitest-results/.last-run.json',
     },
 });

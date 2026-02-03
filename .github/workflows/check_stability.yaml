@@ -2,7 +2,7 @@ name: Check Release Stability
 
 on:
   workflow_dispatch:
-  pull_request_target:
+  pull_request:
   push:
     branches:
       - main
@@ -10,6 +10,7 @@ on:
 jobs:
   check_stability:
     timeout-minutes: 30
+    # environment: test-env
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -33,10 +34,12 @@ jobs:
         run: pnpm exec playwright install --with-deps
       - name: Test Codebase
         run: pnpm test
-      - name: Upload Artifacts
+      - name: Upload Test Results
         uses: actions/upload-artifact@v6
-        if: ${{ !cancelled() }}
         with:
-          name: report
-          path: test-results/
+          name: test-results
+          path: |
+            playwright-results/
+            vitest-results/
           retention-days: 90
+          include-hidden-files: true
