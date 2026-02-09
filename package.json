@@ -54,6 +54,7 @@
     },
     "dependencies": {
         "@iconify/svelte": "^5.2.1",
+        "drizzle-orm": "^0.45.1",
         "pg": "^8.18.0",
         "svelte": "5.49.1",
         "valibot": "^1.2.0"
