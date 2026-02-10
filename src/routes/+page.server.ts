@@ -21,7 +21,8 @@ import {db} from "$lib/server/db";
 import { accountRoles } from "$lib/server/schema";
 import * as accountDAO from "$lib/server/accountDAO";
 
-console.log(accountDAO.listAll());
+let results = await accountDAO.listAll();
+console.log(results);
 
 console.log ("Page loaded")
 >>>>>>> 182436e (changed from email to id; more test code)
