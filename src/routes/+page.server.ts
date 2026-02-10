@@ -35,7 +35,7 @@ const result = await db
     .from(accountRoles)
 console.log(result)
 
-accountDAO.deleteAccount(1);
+accountDAO.deleteAcc(1);
 
 console.log ("Page loaded")
 >>>>>>> 182436e (changed from email to id; more test code)
