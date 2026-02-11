@@ -1,4 +1,5 @@
 import { pgTable, serial, varchar, date, smallint, text, foreignKey, integer, unique, numeric, timestamp, boolean } from "drizzle-orm/pg-core"
+import { relations } from "drizzle-orm";
 
 
 
@@ -268,3 +269,163 @@ export const changelog = pgTable("changelog", {
 			name: "changelog_accountid_fkey"
 		}),
 ]);
+
+
+
+export const facultycontactnumberRelations = relations(facultycontactnumber, ({ one }) => ({
+	faculty: one(faculty, {
+		fields: [facultycontactnumber.facultyid],
+		references: [faculty.facultyid],
+	}),
+}));
+
+export const facultyRelations = relations(faculty, ({ many }) => ({
+	facultycontactnumbers: many(facultycontactnumber),
+	facultyeducationalattainments: many(facultyeducationalattainment),
+	facultyfieldofinterests: many(facultyfieldofinterest),
+	facultyranks: many(facultyrank),
+	facultyhomeaddresses: many(facultyhomeaddress),
+	facultyadministratives: many(facultyadministrative),
+	facultyteachings: many(facultyteaching),
+	facultyresearches: many(facultyresearch),
+	facultyextensions: many(facultyextension),
+}));
+
+export const facultyeducationalattainmentRelations = relations(facultyeducationalattainment, ({ one }) => ({
+	faculty: one(faculty, {
+		fields: [facultyeducationalattainment.facultyid],
+		references: [faculty.facultyid],
+	}),
+}));
+
+export const facultyfieldofinterestRelations = relations(facultyfieldofinterest, ({ one }) => ({
+	faculty: one(faculty, {
+		fields: [facultyfieldofinterest.facultyid],
+		references: [faculty.facultyid],
+	}),
+	fieldofinterest: one(fieldofinterest, {
+		fields: [facultyfieldofinterest.fieldofinterestid],
+		references: [fieldofinterest.fieldofinterestid],
+	}),
+}));
+
+export const fieldofinterestRelations = relations(fieldofinterest, ({ many }) => ({
+	facultyfieldofinterests: many(facultyfieldofinterest),
+}));
+
+export const facultyrankRelations = relations(facultyrank, ({ one }) => ({
+	faculty: one(faculty, {
+		fields: [facultyrank.facultyid],
+		references: [faculty.facultyid],
+	}),
+	rank: one(rank, {
+		fields: [facultyrank.rankid],
+		references: [rank.rankid],
+	}),
+}));
+
+export const rankRelations = relations(rank, ({ many }) => ({
+	facultyranks: many(facultyrank),
+}));
+
+export const facultyhomeaddressRelations = relations(facultyhomeaddress, ({ one }) => ({
+	faculty: one(faculty, {
+		fields: [facultyhomeaddress.facultyid],
+		references: [faculty.facultyid],
+	}),
+}));
+
+export const facultyadministrativeRelations = relations(facultyadministrative, ({ one }) => ({
+	faculty: one(faculty, {
+		fields: [facultyadministrative.facultyid],
+		references: [faculty.facultyid],
+	}),
+	semester: one(semester, {
+		fields: [facultyadministrative.acadsemesterid],
+		references: [semester.acadsemesterid],
+	}),
+	adminposition: one(adminposition, {
+		fields: [facultyadministrative.positionid],
+		references: [adminposition.positionid],
+	}),
+}));
+
+export const semesterRelations = relations(semester, ({ many }) => ({
+	facultyadministratives: many(facultyadministrative),
+	facultyteachings: many(facultyteaching),
+	facultyresearches: many(facultyresearch),
+}));
+
+export const adminpositionRelations = relations(adminposition, ({ many }) => ({
+	facultyadministratives: many(facultyadministrative),
+}));
+
+export const facultyteachingRelations = relations(facultyteaching, ({ one }) => ({
+	faculty: one(faculty, {
+		fields: [facultyteaching.facultyid],
+		references: [faculty.facultyid],
+	}),
+	semester: one(semester, {
+		fields: [facultyteaching.acadsemesterid],
+		references: [semester.acadsemesterid],
+	}),
+	course: one(course, {
+		fields: [facultyteaching.courseid],
+		references: [course.courseid],
+	}),
+}));
+
+export const courseRelations = relations(course, ({ many }) => ({
+	facultyteachings: many(facultyteaching),
+}));
+
+export const facultyresearchRelations = relations(facultyresearch, ({ one }) => ({
+	faculty: one(faculty, {
+		fields: [facultyresearch.facultyid],
+		references: [faculty.facultyid],
+	}),
+	semester: one(semester, {
+		fields: [facultyresearch.acadsemesterid],
+		references: [semester.acadsemesterid],
+	}),
+	research: one(research, {
+		fields: [facultyresearch.researchid],
+		references: [research.researchid],
+	}),
+}));
+
+export const researchRelations = relations(research, ({ many }) => ({
+	facultyresearches: many(facultyresearch),
+}));
+
+export const facultyextensionRelations = relations(facultyextension, ({ one }) => ({
+	faculty: one(faculty, {
+		fields: [facultyextension.facultyid],
+		references: [faculty.facultyid],
+	}),
+}));
+
+export const userroleRelations = relations(userrole, ({ one }) => ({
+	user: one(user, {
+		fields: [userrole.userid],
+		references: [user.id],
+	}),
+	role: one(role, {
+		fields: [userrole.role],
+		references: [role.role],
+	})
+}))
+
+export const roleRelations = relations(role, ({ one }) => ({
+	userrole: one(userrole, {
+		fields: [role.role],
+		references: [userrole.role],
+	}),
+}));
+
+export const changelogRelations = relations(changelog, ({ one }) => ({
+	account: one(user, {
+		fields: [changelog.accountid],
+		references: [user.id],
+	}),
+}));
