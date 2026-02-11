@@ -11,13 +11,6 @@
   let passwordInput: HTMLInputElement;
 </script>
 
-<svelte:head>
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
-
-  <!-- TODO: Add Google OAuth Client ID in content attribute -->
-  <meta name="google-signin-client_id" content="">
-</svelte:head>
-
 <div class="flex h-screen bg-[url('/assets/login-background.png')] bg-cover bg-center">
   <div class="pr-12 w-212 bg-[rgb(40,118,70)] opacity-80 text-fims-white flex items-center">
     <h1 class="font-bold text-6xl leading-[1.2] tracking-tight text-right">Faculty Information Management System</h1>
@@ -82,10 +75,15 @@
     </form>
 
     <!-- Google SSO -->
-    <!-- TODO: Add on success function in data-onsuccess attribute -->
-    <div
-      class="g-signin2 *:rounded-lg! *:shadow-none!"
-      data-onsuccess=""
-    ></div>
+    <form
+      method="POST"
+      action="?/signInSocial"
+    >
+      <button
+        class="w-47 bg-[#e9e9e9] rounded-lg h-12"
+        name="provider" value="google"
+        type="submit"
+      >Sign in with Google</button>
+    </form>
   </div>
 </div>
