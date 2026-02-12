@@ -54,7 +54,7 @@
     </form>
   </div>
   <div class="w-100">
-    <span class="text-">{logMaker} ({logTimestamp}): {logOperation}</span>
+    <span class="text-[#535353] truncate">{logMaker} ({logTimestamp}): {logOperation}</span>
   </div>
   <div class="justify-center w-50">
     <form
