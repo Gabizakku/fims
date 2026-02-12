@@ -381,13 +381,13 @@ export const changelog = pgTable(
     {
         logid: serial().primaryKey().notNull(),
         timestamp: timestamp({ mode: 'string' }).notNull(),
-        accountid: text(),
+        userid: text(),
         tupleid: integer(),
         operation: smallint().notNull(),
     },
     (table) => [
         foreignKey({
-            columns: [table.accountid],
+            columns: [table.userid],
             foreignColumns: [appuser.id],
             name: 'changelog_accountid_fkey',
         }),
@@ -597,7 +597,7 @@ export const changelogRelations = relations(changelog, ({ one }) => ({
         references: [faculty.latestchangelogid],
     }),
     user: one(appuser, {
-        fields: [changelog.accountid],
+        fields: [changelog.userid],
         references: [appuser.id],
     }),
     userinfo: one(userinfo, {
