@@ -1,9 +1,8 @@
 import { boolean, index, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+import { changelog, userinfo } from './schema';
 
-import { changelog, userrole } from './schema';
-
-export const user = pgTable('user', {
+export const appuser = pgTable('appuser', {
     id: text('id').primaryKey(),
     name: text('name').notNull(),
     email: text('email').notNull().unique(),
@@ -14,6 +13,10 @@ export const user = pgTable('user', {
         .defaultNow()
         .$onUpdate(() => /* @__PURE__ */ new Date())
         .notNull(),
+    role: text('role'),
+    banned: boolean('banned').default(false),
+    banReason: text('ban_reason'),
+    banExpires: timestamp('ban_expires'),
 });
 
 export const session = pgTable(
@@ -30,7 +33,8 @@ export const session = pgTable(
         userAgent: text('user_agent'),
         userId: text('user_id')
             .notNull()
-            .references(() => user.id, { onDelete: 'cascade' }),
+            .references(() => appuser.id, { onDelete: 'cascade' }),
+        impersonatedBy: text('impersonated_by'),
     },
     (table) => [index('session_userId_idx').on(table.userId)],
 );
@@ -43,7 +47,7 @@ export const account = pgTable(
         providerId: text('provider_id').notNull(),
         userId: text('user_id')
             .notNull()
-            .references(() => user.id, { onDelete: 'cascade' }),
+            .references(() => appuser.id, { onDelete: 'cascade' }),
         accessToken: text('access_token'),
         refreshToken: text('refresh_token'),
         idToken: text('id_token'),
@@ -75,29 +79,29 @@ export const verification = pgTable(
     (table) => [index('verification_identifier_idx').on(table.identifier)],
 );
 
-export const userRelations = relations(user, ({ many, one }) => ({
+export const appuserRelations = relations(appuser, ({ many, one }) => ({
     sessions: many(session),
     accounts: many(account),
-    userrole: one(userrole, {
-        fields: [user.id],
-        references: [userrole.userid],
+    userinfo: one(userinfo, {
+        fields: [appuser.id],
+        references: [userinfo.userid],
     }),
     changelog: one(changelog, {
-        fields: [user.id],
-        references: [changelog.accountid],
+        fields: [appuser.id],
+        references: [changelog.userid],
     }),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
-    user: one(user, {
+    appuser: one(appuser, {
         fields: [session.userId],
-        references: [user.id],
+        references: [appuser.id],
     }),
 }));
 
 export const accountRelations = relations(account, ({ one }) => ({
-    user: one(user, {
+    appuser: one(appuser, {
         fields: [account.userId],
-        references: [user.id],
+        references: [appuser.id],
     }),
 }));

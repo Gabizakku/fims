@@ -14,29 +14,37 @@ import {
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
-import { user } from './auth.schema';
+import { appuser } from './auth.schema';
 export * from './auth.schema';
 
-export const faculty = pgTable('faculty', {
-    facultyid: serial().primaryKey().notNull(),
-    lastname: varchar({ length: 100 }).notNull(),
-    middlename: varchar({ length: 100 }).notNull(),
-    firstname: varchar({ length: 100 }).notNull(),
-    suffix: varchar({ length: 50 }),
-    birthdate: date().notNull(),
-    status: varchar({ length: 50 }).notNull(),
-    dateoforiginalappointment: date().notNull(),
-    psiitem: varchar({ length: 50 }).notNull(),
-    employeenumber: varchar({ length: 50 }).notNull(),
-    tin: varchar({ length: 50 }).notNull(),
-    gsis: varchar({ length: 50 }).notNull(),
-    philhealth: varchar({ length: 50 }).notNull(),
-    pagibig: varchar({ length: 50 }).notNull(),
-    istenured: smallint(),
-    tenureposition: varchar({ length: 100 }),
-    dateoftenure: date(),
-    remarks: text(),
-});
+export const faculty = pgTable(
+    'faculty',
+    {
+        facultyid: serial().primaryKey().notNull(),
+        lastname: varchar({ length: 100 }).notNull(),
+        middlename: varchar({ length: 100 }).notNull(),
+        firstname: varchar({ length: 100 }).notNull(),
+        suffix: varchar({ length: 50 }),
+        birthdate: date().notNull(),
+        status: varchar({ length: 50 }).notNull(),
+        dateoforiginalappointment: date().notNull(),
+        psiitem: varchar({ length: 50 }).notNull(),
+        employeenumber: varchar({ length: 50 }).notNull(),
+        tin: varchar({ length: 50 }).notNull(),
+        gsis: varchar({ length: 50 }).notNull(),
+        philhealth: varchar({ length: 50 }).notNull(),
+        pagibig: varchar({ length: 50 }).notNull(),
+        remarks: text(),
+        latestchangelogid: integer(),
+    },
+    (table) => [
+        foreignKey({
+            columns: [table.latestchangelogid],
+            foreignColumns: [changelog.logid],
+            name: 'faculty_latestchangelogid_fkey',
+        }),
+    ]
+);
 
 export const facultycontactnumber = pgTable(
     'facultycontactnumber',
@@ -76,9 +84,9 @@ export const fieldofinterest = pgTable(
     'fieldofinterest',
     {
         fieldofinterestid: serial().primaryKey().notNull(),
-        fieldname: varchar({ length: 100 }).notNull(),
+        field: varchar({ length: 100 }).notNull(),
     },
-    (table) => [unique('fieldofinterest_fieldname_key').on(table.fieldname)],
+    (table) => [unique('fieldofinterest_field_key').on(table.field)],
 );
 
 export const facultyfieldofinterest = pgTable(
@@ -115,7 +123,8 @@ export const facultyrank = pgTable(
         facultyrankid: serial().primaryKey().notNull(),
         facultyid: integer(),
         rankid: integer(),
-        dateofappointment: date().notNull(),
+        appointmentstatus: varchar({ length: 50 }).notNull(),
+        dateoftenureorrenewal: date().notNull(),
     },
     (table) => [
         foreignKey({
@@ -131,14 +140,63 @@ export const facultyrank = pgTable(
     ],
 );
 
+export const facultyemail = pgTable(
+    'facultyemail',
+    {
+        facultyemailid: serial().primaryKey().notNull(),
+        facultyid: integer(),
+        email: varchar({ length: 100 }).notNull(),
+    },
+    (table) => [
+        foreignKey({
+            columns: [table.facultyid],
+            foreignColumns: [faculty.facultyid],
+            name: 'facultyemail_facultyid_fkey',
+        }).onDelete('cascade'),
+    ],
+);
+
 export const semester = pgTable('semester', {
     acadsemesterid: serial().primaryKey().notNull(),
     semester: smallint().notNull(),
     academicyear: integer().notNull(),
 });
 
+export const facultysemester = pgTable(
+    'facultysemester',
+    {
+        facultysemesterid: serial().primaryKey().notNull(),
+        facultyid: integer(),
+        acadsemesterid: integer(),
+        currentrankid: integer(),
+        currenthighesteducationalattainmentid: integer(),
+    },
+    (table) => [
+        foreignKey({
+            columns: [table.facultyid],
+            foreignColumns: [faculty.facultyid],
+            name: 'facultysemester_facultyid_fkey',
+        }).onDelete('cascade'),
+        foreignKey({
+            columns: [table.acadsemesterid],
+            foreignColumns: [semester.acadsemesterid],
+            name: 'facultysemester_acadsemesterid_fkey',
+        }),
+        foreignKey({
+            columns: [table.currentrankid],
+            foreignColumns: [facultyrank.facultyrankid],
+            name: 'facultysemester_currentrankid_fkey',
+        }),
+        foreignKey({
+            columns: [table.currenthighesteducationalattainmentid],
+            foreignColumns: [facultyeducationalattainment.facultyeducationalattainmentid],
+            name: 'facultysemester_currenthighesteducationalattainmentid_fkey',
+        }),
+    ],
+);
+
 export const adminposition = pgTable('adminposition', {
-    positionid: serial().primaryKey().notNull(),
+    adminpositionid: serial().primaryKey().notNull(),
     name: varchar({ length: 100 }).notNull(),
 });
 
@@ -169,32 +227,37 @@ export const facultyhomeaddress = pgTable(
     ],
 );
 
-export const facultyadministrative = pgTable(
-    'facultyadministrative',
+export const office = pgTable('office', {
+    officeid: serial().primaryKey().notNull(),
+    name: varchar({ length: 100 }).notNull(),
+});
+
+export const facultyadminposition = pgTable(
+    'facultyadminposition',
     {
-        facultyadministrativeid: serial().primaryKey().notNull(),
-        facultyid: integer(),
-        acadsemesterid: integer(),
-        positionid: integer(),
+        facultyadminpositionid: serial().primaryKey().notNull(),
+        facultysemesterid: integer(),
+        adminpositionid: integer(),
+        officeid: integer(),
         startdate: date().notNull(),
         enddate: date().notNull(),
         administrativeloadcredit: numeric({ precision: 5, scale: 2 }).notNull(),
     },
     (table) => [
         foreignKey({
-            columns: [table.facultyid],
-            foreignColumns: [faculty.facultyid],
-            name: 'facultyadministrative_facultyid_fkey',
+            columns: [table.facultysemesterid],
+            foreignColumns: [facultysemester.facultysemesterid],
+            name: 'facultyadminposition_facultysemesterid_fkey',
         }).onDelete('set null'),
         foreignKey({
-            columns: [table.acadsemesterid],
-            foreignColumns: [semester.acadsemesterid],
-            name: 'facultyadministrative_acadsemesterid_fkey',
+            columns: [table.adminpositionid],
+            foreignColumns: [adminposition.adminpositionid],
+            name: 'facultyadminposition_adminpositionid_fkey',
         }),
         foreignKey({
-            columns: [table.positionid],
-            foreignColumns: [adminposition.positionid],
-            name: 'facultyadministrative_positionid_fkey',
+            columns: [table.officeid],
+            foreignColumns: [office.officeid],
+            name: 'facultyadminposition_officeid_fkey',
         }),
     ],
 );
@@ -286,23 +349,29 @@ export const role = pgTable('role', {
     canviewchangelogs: boolean().notNull(),
 });
 
-export const userrole = pgTable(
-    'userrole',
+export const userinfo = pgTable(
+    'userinfo',
     {
-        userroleid: serial().primaryKey().notNull(),
+        userinfoid: serial().primaryKey().notNull(),
         userid: text(),
         role: varchar({ length: 50 }).notNull(),
+        latestchangelogid: integer(),
     },
     (table) => [
         foreignKey({
             columns: [table.userid],
-            foreignColumns: [user.id],
+            foreignColumns: [appuser.id],
             name: 'userrole_userid_fkey',
-        }),
+        }).onDelete('cascade'),
         foreignKey({
             columns: [table.role],
             foreignColumns: [role.role],
             name: 'userrole_role_fkey',
+        }),
+        foreignKey({
+            columns: [table.latestchangelogid],
+            foreignColumns: [changelog.logid],
+            name: 'userchangelog_latestchangelogid_fkey',
         }),
     ],
 );
@@ -312,16 +381,16 @@ export const changelog = pgTable(
     {
         logid: serial().primaryKey().notNull(),
         timestamp: timestamp({ mode: 'string' }).notNull(),
-        accountid: text(),
+        userid: text(),
         tupleid: integer(),
-        operation: smallint().notNull(),
+        operation: text().notNull(),
     },
     (table) => [
         foreignKey({
-            columns: [table.accountid],
-            foreignColumns: [user.id],
+            columns: [table.userid],
+            foreignColumns: [appuser.id],
             name: 'changelog_accountid_fkey',
-        }),
+        }).onDelete('set null'),
     ],
 );
 
@@ -332,16 +401,21 @@ export const facultycontactnumberRelations = relations(facultycontactnumber, ({ 
     }),
 }));
 
-export const facultyRelations = relations(faculty, ({ many }) => ({
+export const facultyRelations = relations(faculty, ({ many, one }) => ({
     facultycontactnumbers: many(facultycontactnumber),
     facultyeducationalattainments: many(facultyeducationalattainment),
     facultyfieldofinterests: many(facultyfieldofinterest),
     facultyranks: many(facultyrank),
+    facultyemails: many(facultyemail),
     facultyhomeaddresses: many(facultyhomeaddress),
-    facultyadministratives: many(facultyadministrative),
+    facultysemesters: many(facultysemester),
     facultyteachings: many(facultyteaching),
     facultyresearches: many(facultyresearch),
     facultyextensions: many(facultyextension),
+    changelog: one(changelog, {
+        fields: [faculty.latestchangelogid],
+        references: [changelog.logid],
+    }),
 }));
 
 export const facultyeducationalattainmentRelations = relations(
@@ -350,6 +424,10 @@ export const facultyeducationalattainmentRelations = relations(
         faculty: one(faculty, {
             fields: [facultyeducationalattainment.facultyid],
             references: [faculty.facultyid],
+        }),
+        facultysemester: one(facultysemester, {
+            fields: [facultyeducationalattainment.facultyeducationalattainmentid],
+            references: [facultysemester.currenthighesteducationalattainmentid],
         }),
     }),
 );
@@ -378,6 +456,17 @@ export const facultyrankRelations = relations(facultyrank, ({ one }) => ({
         fields: [facultyrank.rankid],
         references: [rank.rankid],
     }),
+    facultysemester: one(facultysemester, {
+        fields: [facultyrank.facultyrankid],
+        references: [facultysemester.currentrankid],
+    }),
+}));
+
+export const facultyemailRelations = relations(facultyemail, ({ one }) => ({
+    faculty: one(faculty, {
+        fields: [facultyemail.facultyid],
+        references: [faculty.facultyid],
+    }),
 }));
 
 export const rankRelations = relations(rank, ({ many }) => ({
@@ -391,29 +480,48 @@ export const facultyhomeaddressRelations = relations(facultyhomeaddress, ({ one 
     }),
 }));
 
-export const facultyadministrativeRelations = relations(facultyadministrative, ({ one }) => ({
-    faculty: one(faculty, {
-        fields: [facultyadministrative.facultyid],
-        references: [faculty.facultyid],
-    }),
-    semester: one(semester, {
-        fields: [facultyadministrative.acadsemesterid],
-        references: [semester.acadsemesterid],
+export const facultyadminpositionRelations = relations(facultyadminposition, ({ many, one }) => ({
+    facultysemesters: one(facultysemester, {
+        fields: [facultyadminposition.facultysemesterid],
+        references: [facultysemester.facultysemesterid],
     }),
     adminposition: one(adminposition, {
-        fields: [facultyadministrative.positionid],
-        references: [adminposition.positionid],
+        fields: [facultyadminposition.adminpositionid],
+        references: [adminposition.adminpositionid],
+    }),
+    office: one(office, {
+        fields: [facultyadminposition.officeid],
+        references: [office.officeid],
     }),
 }));
 
 export const semesterRelations = relations(semester, ({ many }) => ({
-    facultyadministratives: many(facultyadministrative),
+    facultysemesters: many(facultysemester),
     facultyteachings: many(facultyteaching),
     facultyresearches: many(facultyresearch),
 }));
 
+export const facultysemesterRelations = relations(facultysemester, ({ one }) => ({
+    faculty: one(faculty, {
+        fields: [facultysemester.facultyid],
+        references: [faculty.facultyid],
+    }),
+    semester: one(semester, {
+        fields: [facultysemester.acadsemesterid],
+        references: [semester.acadsemesterid],
+    }),
+    facultyrank: one(facultyrank, {
+        fields: [facultysemester.currentrankid],
+        references: [facultyrank.facultyrankid],
+    }),
+    facultyeducationalattainment: one(facultyeducationalattainment, {
+        fields: [facultysemester.currenthighesteducationalattainmentid],
+        references: [facultyeducationalattainment.facultyeducationalattainmentid],
+    }),
+}));
+
 export const adminpositionRelations = relations(adminposition, ({ many }) => ({
-    facultyadministratives: many(facultyadministrative),
+    facultyadminpositions: many(facultyadminposition),
 }));
 
 export const facultyteachingRelations = relations(facultyteaching, ({ one }) => ({
@@ -461,27 +569,39 @@ export const facultyextensionRelations = relations(facultyextension, ({ one }) =
     }),
 }));
 
-export const userroleRelations = relations(userrole, ({ one }) => ({
-    user: one(user, {
-        fields: [userrole.userid],
-        references: [user.id],
+export const userinfoRelations = relations(userinfo, ({ one }) => ({
+    user: one(appuser, {
+        fields: [userinfo.userid],
+        references: [appuser.id],
     }),
     role: one(role, {
-        fields: [userrole.role],
+        fields: [userinfo.role],
         references: [role.role],
+    }),
+    changelog: one(changelog, {
+        fields: [userinfo.latestchangelogid],
+        references: [changelog.logid],
     }),
 }));
 
 export const roleRelations = relations(role, ({ one }) => ({
-    userrole: one(userrole, {
+    userinfo: one(userinfo, {
         fields: [role.role],
-        references: [userrole.role],
+        references: [userinfo.role],
     }),
 }));
 
 export const changelogRelations = relations(changelog, ({ one }) => ({
-    account: one(user, {
-        fields: [changelog.accountid],
-        references: [user.id],
+    faculty: one(faculty, {
+        fields: [changelog.logid],
+        references: [faculty.latestchangelogid],
+    }),
+    user: one(appuser, {
+        fields: [changelog.userid],
+        references: [appuser.id],
+    }),
+    userinfo: one(userinfo, {
+        fields: [changelog.logid],
+        references: [userinfo.latestchangelogid],
     }),
 }));
