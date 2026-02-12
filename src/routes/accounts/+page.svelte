@@ -43,6 +43,7 @@
       <div class="justify-center w-25"><span>Select</span></div>
       <div class="w-132">
         <span>Email</span>
+        <Icon icon="tabler:arrow-up" class="h-5 w-5 text-white ml-3" />
       </div>
       <div class="justify-center w-50"><span>Reset Password?</span></div>
       <div class="justify-center w-75">
