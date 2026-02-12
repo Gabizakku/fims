@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { drizzle } from "drizzle-orm/neon-http"
 import { DATABASE_URL } from "$env/static/private"
 import * as schema from "$lib/server/schema"
@@ -9,4 +10,9 @@ import { neon } from "@neondatabase/serverless";
 
 const sql = neon(DATABASE_URL!);
 export const db = drizzle(sql, {schema});
+=======
+import { drizzle } from "drizzle-orm/node-postgres"
+
+export const db = drizzle(process.env.DATABASE_URL!)
+>>>>>>> cc9123c (init db code)
 
