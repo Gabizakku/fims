@@ -1,6 +1,7 @@
 import { getFacultyRecordList } from "$lib/server/db-helpers";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 export async function load() {
     // const facultyRecordList = await getFacultyRecordList();
     const facultyRecordList = [
@@ -19,6 +20,8 @@ export async function load() {
 =======
 import {db} from "$lib/server/db";
 import { accountRoles } from "$lib/server/schema";
+=======
+>>>>>>> 965c96b (refactor(accountDAO.ts, schema.ts, page.server.ts) changed name to following existing convention)
 import * as accountDAO from "$lib/server/accountDAO";
 
 let results = await accountDAO.listAll();
