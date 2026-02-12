@@ -2,7 +2,7 @@ import { eq, desc } from 'drizzle-orm';
 
 import { db } from './db';
 
-import { role, userrole, faculty, facultyadminposition, adminposition, semester, rank, facultysemester, facultyrank, appuser } from './db/schema';
+import { role, userinfo, faculty, facultyadminposition, adminposition, semester, rank, facultysemester, facultyrank, appuser } from './db/schema';
 
 export async function assignRole(id: string, role: string) {
     await db.insert(userrole).values({
@@ -14,7 +14,7 @@ export async function assignRole(id: string, role: string) {
 }
 
 export async function getRole(id: string) {
-    const [fetchedUser] = await db.select().from(userrole).where(eq(userrole.userid, id)).limit(1);
+    const [fetchedUser] = await db.select().from(userinfo).where(eq(userinfo.userid, id)).limit(1);
 
     return fetchedUser.role;
 }

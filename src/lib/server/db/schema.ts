@@ -349,12 +349,13 @@ export const role = pgTable('role', {
     canviewchangelogs: boolean().notNull(),
 });
 
-export const userrole = pgTable(
-    'userrole',
+export const userinfo = pgTable(
+    'userinfo',
     {
-        userroleid: serial().primaryKey().notNull(),
+        userinfoid: serial().primaryKey().notNull(),
         userid: text(),
         role: varchar({ length: 50 }).notNull(),
+        latestchangelogid: integer(),
     },
     (table) => [
         foreignKey({
@@ -366,22 +367,6 @@ export const userrole = pgTable(
             columns: [table.role],
             foreignColumns: [role.role],
             name: 'userrole_role_fkey',
-        }),
-    ],
-);
-
-export const userchangelog = pgTable(
-    'userchangelog',
-    {
-        userchangelogid: serial().primaryKey().notNull(),
-        userid: text(),
-        latestchangelogid: integer(),
-    },
-    (table) => [
-        foreignKey({
-            columns: [table.userid],
-            foreignColumns: [user.id],
-            name: 'userchangelog_userid_fkey',
         }),
         foreignKey({
             columns: [table.latestchangelogid],
@@ -584,32 +569,25 @@ export const facultyextensionRelations = relations(facultyextension, ({ one }) =
     }),
 }));
 
-export const userroleRelations = relations(userrole, ({ one }) => ({
-    user: one(user, {
-        fields: [userrole.userid],
-        references: [user.id],
+export const userinfoRelations = relations(userinfo, ({ one }) => ({
+    user: one(appuser, {
+        fields: [userinfo.userid],
+        references: [appuser.id],
     }),
     role: one(role, {
-        fields: [userrole.role],
+        fields: [userinfo.role],
         references: [role.role],
+    }),
+    changelog: one(changelog, {
+        fields: [userinfo.latestchangelogid],
+        references: [changelog.logid],
     }),
 }));
 
 export const roleRelations = relations(role, ({ one }) => ({
-    userrole: one(userrole, {
+    userinfo: one(userinfo, {
         fields: [role.role],
-        references: [userrole.role],
-    }),
-}));
-
-export const userchangelogRelations = relations(userchangelog, ({ one }) => ({
-    user: one(user, {
-        fields: [userchangelog.userid],
-        references: [user.id],
-    }),
-    changelog: one(changelog, {
-        fields: [userchangelog.latestchangelogid],
-        references: [changelog.logid],
+        references: [userinfo.role],
     }),
 }));
 
@@ -622,8 +600,8 @@ export const changelogRelations = relations(changelog, ({ one }) => ({
         fields: [changelog.accountid],
         references: [appuser.id],
     }),
-    userchangelog: one(userchangelog, {
+    userinfo: one(userinfo, {
         fields: [changelog.logid],
-        references: [userchangelog.latestchangelogid],
+        references: [userinfo.latestchangelogid],
     }),
 }));
