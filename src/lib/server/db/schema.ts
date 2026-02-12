@@ -370,6 +370,27 @@ export const userrole = pgTable(
     ],
 );
 
+export const userchangelog = pgTable(
+    'userchangelog',
+    {
+        userchangelogid: serial().primaryKey().notNull(),
+        userid: text(),
+        latestchangelogid: integer(),
+    },
+    (table) => [
+        foreignKey({
+            columns: [table.userid],
+            foreignColumns: [user.id],
+            name: 'userchangelog_userid_fkey',
+        }),
+        foreignKey({
+            columns: [table.latestchangelogid],
+            foreignColumns: [changelog.logid],
+            name: 'userchangelog_latestchangelogid_fkey',
+        }),
+    ],
+);
+
 export const changelog = pgTable(
     'changelog',
     {
@@ -581,6 +602,17 @@ export const roleRelations = relations(role, ({ one }) => ({
     }),
 }));
 
+export const userchangelogRelations = relations(userchangelog, ({ one }) => ({
+    user: one(user, {
+        fields: [userchangelog.userid],
+        references: [user.id],
+    }),
+    changelog: one(changelog, {
+        fields: [userchangelog.latestchangelogid],
+        references: [changelog.logid],
+    }),
+}));
+
 export const changelogRelations = relations(changelog, ({ one }) => ({
     faculty: one(faculty, {
         fields: [changelog.logid],
@@ -589,5 +621,9 @@ export const changelogRelations = relations(changelog, ({ one }) => ({
     user: one(user, {
         fields: [changelog.accountid],
         references: [user.id],
+    }),
+    userchangelog: one(userchangelog, {
+        fields: [changelog.logid],
+        references: [userchangelog.latestchangelogid],
     }),
 }));
