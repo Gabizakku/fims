@@ -32,9 +32,6 @@ export const faculty = pgTable('faculty', {
     gsis: varchar({ length: 50 }).notNull(),
     philhealth: varchar({ length: 50 }).notNull(),
     pagibig: varchar({ length: 50 }).notNull(),
-    istenured: smallint(),
-    tenureposition: varchar({ length: 100 }),
-    dateoftenure: date(),
     remarks: text(),
 });
 
@@ -115,7 +112,8 @@ export const facultyrank = pgTable(
         facultyrankid: serial().primaryKey().notNull(),
         facultyid: integer(),
         rankid: integer(),
-        dateofappointment: date().notNull(),
+        appointmentstatus: varchar({ length: 50 }).notNull(),
+        dateoftenureorrenewal: date().notNull(),
     },
     (table) => [
         foreignKey({
