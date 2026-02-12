@@ -1,8 +1,14 @@
 import { type Actions, fail } from '@sveltejs/kit';
 import { APIError } from 'better-auth';
 
-import { assignRole } from '$lib/server/db-helpers';
+import { assignRole, getAccountList } from '$lib/server/db-helpers';
 import { auth } from '$lib/server/auth';
+
+export async function load() {
+    const accountList = await getAccountList();
+
+    return { accountList };
+}
 
 export const actions = {
     async default({ request }) {
