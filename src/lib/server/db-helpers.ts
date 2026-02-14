@@ -2,6 +2,17 @@ import { desc, eq, ne } from 'drizzle-orm';
 
 import { db } from './db';
 
+import { createAuthClient } from 'better-auth/svelte';
+import { adminClient } from 'better-auth/client/plugins';
+
+import { BETTER_AUTH_URL, BETTER_AUTH_SECRET } from '$env/static/private';
+
+const authClient = createAuthClient({
+    baseURL: BETTER_AUTH_URL,
+    plugins:[adminClient()]
+});
+
+
 import {
     adminposition,
     appuser,
@@ -55,6 +66,25 @@ export async function makeUser(makerid: string, id: string, role: string) {
         .where(eq(userinfo.userinfoid, tupleid));
 
     return { success: true };
+}
+
+export async function deleteUser(deleterid: string, id: string) {
+    const returnedIds = await db
+        .select({id: userinfo.userinfoid})
+        .from(userinfo)
+        .where(eq(userinfo.userid, id));
+
+    const deletedID = returnedIds[0].id;
+
+    // deletion
+    await db
+    .delete(appuser)
+    .where(eq(appuser.id, id))
+
+    // log
+    const logid = await logChange(deleterid, deletedID, 'Deleted account.');    
+
+    return { success: true }
 }
 
 export async function getRole(id: string) {
