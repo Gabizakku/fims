@@ -2,15 +2,11 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
     webServer: {
-        command: 'pnpm preview',
+        command: 'npm run build && npm run preview',
         port: 4173,
-        reuseExistingServer: true,
     },
     testDir: 'tests/playwright',
     outputDir: 'playwright-results',
-    use: {
-        baseURL: 'http://localhost:4173',
-    },
     projects: [
         {
             name: 'admin-auth',
