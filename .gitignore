@@ -35,3 +35,6 @@ drizzle
 # Playwright
 /playwright-results
 /playwright
+
+# Vitest
+/vitest-results
