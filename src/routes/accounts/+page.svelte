@@ -50,7 +50,7 @@
 <div>
     <!-- Make/Save Account Button -->
     <div class="flex justify-center">
-        <div class="flex justify-end w-432">
+        <div class="flex w-432 justify-end">
             {#if isMakingAccount}
                 <button
                     onclick={toggleModal}

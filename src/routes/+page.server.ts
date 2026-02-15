@@ -1,6 +1,4 @@
-import { getPermissions, getRole } from '$lib/server/db-helpers';
-
-export async function load({ locals }) {
+export function load() {
     // const facultyRecordList = await getFacultyRecordList();
     const facultyRecordList = [
         {

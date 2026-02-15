@@ -14,7 +14,7 @@ export async function load({ locals, url }) {
         const {
             canaddaccount,
             canmodifyaccount,
-            canviewchangelogs: canViewChangeLogs
+            canviewchangelogs: canViewChangeLogs,
         } = await getPermissions(userRole);
 
         const accountColorMap = new Map();
