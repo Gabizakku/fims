@@ -9,16 +9,23 @@ export default defineConfig({
     outputDir: 'playwright-results',
     projects: [
         {
+            name: 'invalid-logins',
+            testMatch: /.e2e.(?:js|ts)/u,
+            testDir: "tests/playwright/invalid-login"
+        },
+        {
             name: 'admin-auth',
             testMatch: /admin-auth.setup.e2e.(?:js|ts)/u,
+            dependencies: ['invalid-logins'],
         },
         {
             name: 'it-auth',
             testMatch: /it-auth.setup.e2e.(?:js|ts)/u,
+            dependencies: ['invalid-logins'],
         },
         {
             name: 'common-tests',
-            dependencies: ['admin-auth', 'it-auth'],
+            dependencies: ['admin-auth', 'it-auth', 'invalid-logins'],
             testMatch: /.common.e2e.(?:js|ts)/u,
         },
         {
@@ -29,7 +36,7 @@ export default defineConfig({
         },
         {
             name: 'logout',
-            dependencies: ['it-auth', 'admin-auth', 'common-tests', 'it-specific-tests'],
+            dependencies: ['it-auth', 'admin-auth', 'common-tests', 'it-specific-tests', 'invalid-logins'],
             testDir: 'tests/playwright/logout',
             testMatch: /.e2e.(?:js|ts)/u,
         }
