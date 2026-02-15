@@ -28,6 +28,7 @@ jobs:
         # declare .env variables here
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          MODE: ${{ secrets.MODE }}
           ORIGIN: ${{ secrets.ORIGIN }}
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
@@ -40,7 +41,7 @@ jobs:
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
       - name: Test Codebase
-        run: pnpm test
+        run: pnpm build && pnpm test
       - name: Upload Test Results
         uses: actions/upload-artifact@v6
         with:

@@ -1,6 +1,3 @@
-// drizzle.config.ts
-import { env } from 'node:process';
-
 import { defineConfig } from 'drizzle-kit';
 
 export default defineConfig({
@@ -8,7 +5,7 @@ export default defineConfig({
     out: './drizzle', // Where migrations will be saved
     dialect: 'postgresql', // You are using the 'pg' library
     dbCredentials: {
-        url: env.DATABASE_URL || '', // Reads from your .env file
+        url: process.env.DATABASE_URL || '', // Reads from your .env file
         ssl: true,
     },
 });

@@ -28,3 +28,13 @@ vite.config.ts.timestamp-*
 
 # Drizzle
 drizzle
+
+# VSCode
+/.vscode
+
+# Playwright
+/playwright-results
+/playwright
+
+# Vitest
+/vitest-results
