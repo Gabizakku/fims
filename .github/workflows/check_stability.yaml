@@ -41,7 +41,7 @@ jobs:
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
       - name: Test Codebase
-        run: pnpm test
+        run: pnpm build && pnpm test
       - name: Upload Test Results
         uses: actions/upload-artifact@v6
         with:
