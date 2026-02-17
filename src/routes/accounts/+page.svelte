@@ -49,21 +49,17 @@
 {/if}
 
 <div>
-    <!-- Make/Save Account Button -->
+    <!-- Add Account Button -->
     <div class="flex justify-center">
-        <div class="flex w-432 justify-end">
-            {#if isMakingAccount}
-                <button
-                    onclick={toggleModal}
-                    class="mt-50 flex items-center justify-center rounded-full border-2 border-fims-green bg-white px-4 py-1 text-fims-green hover:bg-fims-green hover:text-white disabled:border-fims-gray disabled:text-fims-gray"
-                    >+ Save Account</button
-                >
-            {:else}
+        <div class="flex w-315 justify-end 2xl:w-432">
+            {#if !isMakingAccount}
                 <button
                     onclick={() => (isMakingAccount = true)}
                     class="mt-50 flex items-center justify-center rounded-full border-2 border-fims-green bg-white px-4 py-1 text-fims-green hover:bg-fims-green hover:text-white disabled:border-fims-gray disabled:text-fims-gray"
                     >+ Add Account</button
                 >
+            {:else}
+                <div class="mt-59"></div>
             {/if}
         </div>
     </div>
@@ -122,7 +118,16 @@
                     <SelectDropdown name="role" opts={userRoles} selectedOpt={userRoles[0]} />
                 </div>
                 <div class="w-100"></div>
-                <div class="w-50"></div>
+                <div class="w-50 justify-center">
+                    <button
+                        type="button"
+                        onclick={toggleModal}
+                        class="flex items-center justify-center rounded-full border-2 border-fims-green bg-white px-4 py-1 text-fims-green hover:bg-fims-green hover:text-white disabled:border-fims-gray disabled:text-fims-gray"
+                    >
+                        <Icon icon="tabler:device-floppy" class="mr-2 h-6 w-6" />
+                        <span>Save</span>
+                    </button>
+                </div>
             </form>
         {/if}
     </div>
