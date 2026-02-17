@@ -2,6 +2,7 @@
     import Icon from '@iconify/svelte';
     import AccountRow from './(ui)/AccountRow.svelte';
     import SaveConfirmation from './(ui)/SaveConfirmation.svelte';
+    import SelectDropdown from '$lib/ui/SelectDropdown.svelte';
     import { enhance } from '$app/forms';
     const { data, form } = $props();
     const { accountList } = $derived(data);
@@ -120,11 +121,7 @@
                     />
                 </div>
                 <div class="w-75">
-                    <select name="role" id="new-acc-role" class="w-full text-center">
-                        {#each userRoles as userRole (userRole)}
-                            <option value={userRole}>{userRole}</option>
-                        {/each}
-                    </select>
+                    <SelectDropdown name="role" opts={userRoles} selectedOpt={userRoles[0]} />
                 </div>
                 <div class="w-100"></div>
                 <div class="w-50"></div>

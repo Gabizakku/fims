@@ -2,6 +2,7 @@
     import { enhance } from '$app/forms';
     import Icon from '@iconify/svelte';
     import DeleteConfirmation from './DeleteConfirmation.svelte';
+    import SelectDropdown from '$lib/ui/SelectDropdown.svelte';
 
     interface AccountDTO {
         email: string;
@@ -53,15 +54,7 @@
     </div>
     <div class="w-75">
         <form method="POST" action="" class="w-full">
-            <select name="role" class="w-full text-center">
-                {#each userRoles as userRole (userRole)}
-                    {#if userRole === role}
-                        <option value={userRole} selected>{userRole}</option>
-                    {:else}
-                        <option value={userRole}>{userRole}</option>
-                    {/if}
-                {/each}
-            </select>
+            <SelectDropdown name="role" opts={userRoles} selectedOpt={role} />
         </form>
     </div>
     <div class="w-100">
