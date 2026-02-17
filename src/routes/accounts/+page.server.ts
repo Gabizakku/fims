@@ -1,7 +1,7 @@
 import { type Actions, error, fail } from '@sveltejs/kit';
 import { APIError } from 'better-auth';
 
-import { areYouHere, getAccountList, makeUser } from '$lib/server/db-helpers';
+import { areYouHere, getAccountList, makeUserInfo } from '$lib/server/db-helpers';
 import { auth } from '$lib/server/auth';
 
 export async function load({ locals, parent }) {
@@ -53,7 +53,7 @@ export const actions = {
             if (response.user.id === '') return fail(500, { error: 'Failed to make new account.' });
 
             // Add user info
-            await makeUser(locals.user.id, response.user.id, role);
+            await makeUserInfo(locals.user.id, response.user.id, role);
         } catch (error) {
             return fail(500, {
                 error: error instanceof APIError ? error.message : 'Failed to make new account.',

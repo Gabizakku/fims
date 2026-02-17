@@ -32,7 +32,7 @@ export async function logChange(makerid: string, tupleid: number, operation: str
     return logid;
 }
 
-export async function makeUser(makerid: string, id: string, role: string) {
+export async function makeUserInfo(makerid: string, id: string, role: string) {
     // Actual action
     const returnedIds = await db
         .insert(userinfo)
