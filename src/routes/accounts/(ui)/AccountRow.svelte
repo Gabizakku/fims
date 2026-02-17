@@ -1,7 +1,7 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
     import Icon from '@iconify/svelte';
-    import DeleteConfirmation from './DeleteConfirmation.svelte';
+    import DeleteConfirmation from '$lib/ui/DeleteConfirmation.svelte';
     import SelectDropdown from '$lib/ui/SelectDropdown.svelte';
 
     interface AccountDTO {
@@ -87,6 +87,7 @@
                         if (deleteForm) deleteForm.submit();
                     }}
                     onCancel={toggleModal}
+                    text="Are you sure you want to delete the account?"
                 />
             {/if}
         </form>
