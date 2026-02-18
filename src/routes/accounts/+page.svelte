@@ -1,6 +1,7 @@
 <script lang="ts">
     import Icon from '@iconify/svelte';
     import AccountRow from './(ui)/AccountRow.svelte';
+    import LoadingScreen from '$lib/ui/LoadingScreen.svelte';
     import SaveConfirmation from '$lib/ui/SaveConfirmation.svelte';
     import SelectDropdown from '$lib/ui/SelectDropdown.svelte';
     import { enhance } from '$app/forms';
@@ -9,6 +10,7 @@
 
     let isMakingAccount = $state(false);
     let willMake = $state(false);
+    let isSaving = $state(false);
 
     function toggleModal() {
         willMake = !willMake;
@@ -95,7 +97,19 @@
                 action="?/makeAccount"
                 class="flex justify-center [&>div]:flex [&>div]:h-12 [&>div]:items-center [&>div]:border-b [&>div]:border-fims-gray [&>div]:bg-white [&>div]:px-6"
                 bind:this={makeForm}
-                use:enhance
+                use:enhance={({ cancel }) => {
+                    if (!willMake) {
+                        willMake = true;
+                        cancel();
+                    } else {
+                        willMake = false;
+                        isSaving = true;
+                        return async ({ update }) => {
+                            isSaving = false;
+                            await update();
+                        }
+                    }
+                }}
             >
                 <div class="w-25"></div>
                 <div class="w-66 2xl:w-132">
@@ -120,8 +134,7 @@
                 <div class="w-50 2xl:w-100"></div>
                 <div class="w-50 justify-center">
                     <button
-                        type="button"
-                        onclick={toggleModal}
+                        type="submit"
                         class="flex items-center justify-center rounded-full border-2 border-fims-green bg-white px-4 py-1 text-fims-green hover:bg-fims-green hover:text-white disabled:border-fims-gray disabled:text-fims-gray"
                     >
                         <Icon icon="tabler:device-floppy" class="mr-2 h-6 w-6" />
@@ -136,9 +149,13 @@
 {#if willMake}
     <SaveConfirmation
         onSave={() => {
-            if (makeForm) makeForm.submit();
+            if (makeForm) makeForm.requestSubmit();
         }}
         onCancel={toggleModal}
         text="Are you sure you want to save the account?"
     />
+{/if}
+
+{#if isSaving}
+    <LoadingScreen />
 {/if}
