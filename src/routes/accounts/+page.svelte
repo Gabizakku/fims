@@ -38,7 +38,7 @@
         <div
             class="fixed right-3 bottom-3 flex h-8 w-125 items-center rounded-lg border-2 border-fims-green bg-fims-green-100 px-4 py-6"
         >
-            <Icon icon="tabler:alert-hexagon" class="h-6 w-6 text-fims-green" />
+            <Icon icon="tabler:check" class="h-6 w-6 text-fims-green" />
             <p class="px-8">{form.message}</p>
         </div>
     {:else}
