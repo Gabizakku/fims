@@ -69,17 +69,16 @@
             class="flex items-center justify-center"
             bind:this={deleteForm}
             use:enhance={({ cancel }) => {
-                if (!willDelete) {
-                    willDelete = true;
-                    cancel();
-                } else {
+                if (willDelete) {
                     willDelete = false;
                     isDeleting = true;
                     return async ({ update }) => {
                         isDeleting = false;
                         await update();
-                    }
+                    };
                 }
+                willDelete = true;
+                cancel();
             }}
         >
             <button

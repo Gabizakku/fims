@@ -99,18 +99,17 @@
                 class="flex justify-center [&>div]:flex [&>div]:h-12 [&>div]:items-center [&>div]:border-b [&>div]:border-fims-gray [&>div]:bg-white [&>div]:px-6"
                 bind:this={makeForm}
                 use:enhance={({ cancel }) => {
-                    if (!willMake) {
-                        willMake = true;
-                        cancel();
-                    } else {
+                    if (willMake) {
                         isMakingAccount = false;
                         willMake = false;
                         isSaving = true;
                         return async ({ update }) => {
                             isSaving = false;
                             await update();
-                        }
+                        };
                     }
+                    willMake = true;
+                    cancel();
                 }}
             >
                 <div class="w-25"></div>
