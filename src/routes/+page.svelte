@@ -7,8 +7,28 @@
 
 <br />
 
+<div class="mx-auto mt-20 w-full max-w-4xl px-6">
+    <form method="GET" action="/" class="flex items-center gap-4">
+        <div class="relative w-full">
+            <input 
+                type="text" 
+                name="search" 
+                value={data.searchTerm} 
+                placeholder="Search faculty by name..." 
+                class="h-12 w-full rounded-full border-2 border-fims-green bg-white px-6 py-2 outline-none focus:ring-2 focus:ring-fims-green"
+            />
+        </div>
+        <button type="submit" class="h-12 rounded-full bg-fims-green px-8 font-semibold text-white hover:bg-opacity-90">
+            Search
+        </button>
+        {#if data.searchTerm}
+            <a href="/" class="text-fims-red font-medium underline">Clear</a>
+        {/if}
+    </form>
+</div>
+
 <div>
-    <div class="mt-60">
+    <div class="mt-10">
         <!-- Faculty Record List Table -->
         <div
             class="flex justify-center [&>*>span]:text-center [&>*>span]:font-semibold [&>*>span]:text-white [&>div]:flex [&>div]:h-12 [&>div]:items-center [&>div]:bg-fims-green [&>div]:px-6"
